@@ -93,6 +93,10 @@ function _update60()
 	end
 	
 	shk =max(0, shk-0.5)
+	
+	if gameover and btn(❎) then
+		run()
+	end
 end
 
 function _draw()
@@ -119,8 +123,8 @@ function _draw()
 		end
 	end
 	if isgameover then
-		print("you ded",50,64,7)
-		print('yOUR SCORE WAS '.. tostr(flr(score))..'\n you noob',40,80 )
+		print("you ded",40,64,7)
+		print('yOUR SCORE WAS '.. tostr(flr(score))..'\n you noob',20,80 )
 	end
 end
 
