@@ -62,7 +62,7 @@ function _update60()
 		for i=1,3 do
 			spawntimer[i]-=1
 			if spawntimer[i]<0 and not players[i].d then
-				spawntimer[i]=10*alive+rnd(10) + 20/(score/2)
+				spawntimer[i]=max(15*alive+rnd(10) + 20/(score/2),30)
 				
 				local t = rnd{1,2}
 				if t==1 then
@@ -140,7 +140,7 @@ function _draw()
 	end
 	if isgameover then
 		print("\^w\^tyou ded",40,20,7)
-		print('yOUR SCORE WAS '.. tostr(flr(score))..'\n you noob',20,40 )
+		print('yOUR SCORE WAS '.. tostr(flr(score))..'\n lol',20,40 )
 		print("highest score: "..tostr(hiscore\1),20,60 )
 		if newhi then
 			print("new highscore!",20,80,10)
