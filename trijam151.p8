@@ -3,6 +3,8 @@ version 34
 __lua__
 function _init()
 	spd = .2
+	isGameOver = false
+	score = 0
 	
 	players = {}
 	
@@ -33,6 +35,8 @@ function _init()
 end
 
 function _update60()
+	score += 0.1
+
 	for p in all(players)do
 		player_update(p)
 	end
@@ -48,7 +52,6 @@ function _update60()
 				s=5,
 			})
 		end
-		
 	end
 	
 	for e in all(enemies)do
@@ -72,6 +75,43 @@ function _draw()
 end
 
 -->8
+--player
+
+function player_update(p)
+	if btn(⬆️) and p.colly then
+		p.dy = -3
+	end
+	if(btn(⬅️))p.dx-=0.2
+	if(btn(➡️))p.dx+=0.2
+	
+	p.dx *= 0.9
+	p.dy += p.g
+	
+	local x,y,xy=iscoll(p)
+	p.colly=y
+	
+	collide(p,x,y,xy)
+	
+	p.x += p.dx
+	p.y += p.dy
+	
+	for e in all(enemies)do
+		local c=rect_overlap(
+		p,
+		{x=p.x+p.bw+p.bw, 
+		y=p.y+p.by+p.bh},
+		{x=e.x+2, y=e.y+2},
+		{x=e.x+6, y=e.y+6})
+		
+		if(c) p.dx-=0.5
+	end
+
+	if p.dx <0 then
+		isgameover = true
+	end
+end
+
+-->8
 --collision
 function is_solid(x,y)
 	if(x<0 or x>128 or y<0 or y>128)return true
@@ -84,27 +124,8 @@ function touches_rect(x,y,x1,y1,x2,y2)
 	   and y1 <= y
 	   and y2 >= y
 end
---[[
-function circ_coll(a,b)
-	--https://www.lexaloffle.com/bbs/?tid=28999
-	--b: bullet
-	local dx=a.x+4 - b.x
-	local dy=a.y+4 - b.y
-	local d = max(dx,dy)
-	dx /= d
-	dy /= d
-	local sr = (a.r+b.r)/d
-	
-	return dx*dx+dy*dy < sr*sr 
-end
---]]
 
 function rect_overlap(a1,a2,b1,b2)
-	--[[return not (a1.x>b2.x
-	         or a1.y>b2.y 
-	         or a2.x<b1.x
-	         or a2.y<b1.y)--]]
-	
 	return a1.x<b2.x
 	   and a1.y<b2.y 
 	   and a2.x>b1.x
@@ -158,38 +179,6 @@ function collide(o,coll_x,coll_y,coll_xy)
 		--prevent stuck in corners 
 		o.dx *= -bounce
 		o.dy *= -bounce
-	end
-end
--->8
---player
-
-function player_update(p)
-	if btn(⬆️) and p.colly then
-		p.dy = -3
-	end
-	if(btn(⬅️))p.dx-=0.2
-	if(btn(➡️))p.dx+=0.2
-	
-	p.dx *= 0.9
-	p.dy += p.g
-	
-	local x,y,xy=iscoll(p)
-	p.colly=y
-	
-	collide(p,x,y,xy)
-	
-	p.x += p.dx
-	p.y += p.dy
-	
-	for e in all(enemies)do
-		local c=rect_overlap(
-		p,
-		{x=p.x+p.bw+p.bw, 
-		y=p.y+p.by+p.bh},
-		{x=e.x+2, y=e.y+2},
-		{x=e.x+6, y=e.y+6})
-		
-		if(c) p.dx-=0.5
 	end
 end
 __gfx__
