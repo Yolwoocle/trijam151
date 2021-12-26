@@ -7,6 +7,16 @@ function _init()
 	score = 0
 	alive = 3
 	shk = 0
+	newhi=false
+	
+	hiscore = 0
+	if stat(6) != "" and 
+	stat(6) != nil then
+		local n=tonum(stat(6))
+		if n>hiscore then
+			hiscore=n
+		end
+	end
 	
 	players = {}
 	
@@ -94,8 +104,13 @@ function _update60()
 	
 	shk =max(0, shk-0.5)
 	
-	if gameover and btn(❎) then
-		run()
+	if score>hiscore then
+		hiscore=score
+		newhi = true
+	end
+	
+	if isgameover and btn(❎) then
+		run(tostr(hiscore))
 	end
 end
 
@@ -105,6 +120,7 @@ function _draw()
 	cls(12)
 	if not isgameover then
 		print("\^w\^t"..tostr(flr(score)), 15, 15,7)
+		print("hi "..tostr(hiscore\1),15,30,7)
 		map()
 		for p in all(players)do
 			if not p.d then 
@@ -123,8 +139,13 @@ function _draw()
 		end
 	end
 	if isgameover then
-		print("you ded",40,64,7)
-		print('yOUR SCORE WAS '.. tostr(flr(score))..'\n you noob',20,80 )
+		print("\^w\^tyou ded",40,20,7)
+		print('yOUR SCORE WAS '.. tostr(flr(score))..'\n you noob',20,40 )
+		print("highest score: "..tostr(hiscore\1),20,60 )
+		if newhi then
+			print("new highscore!",20,80,10)
+		end
+		print("press ❎ to restart",20,100,7)
 	end
 end
 
