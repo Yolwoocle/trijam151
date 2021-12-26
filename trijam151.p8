@@ -14,6 +14,7 @@ function _init()
 		add(players,{
 			n=i,
 			s=i,
+			d = false,
 			
 			x=128-i*20,
 			y=i*40-20,
@@ -71,7 +72,9 @@ function _draw()
 	map()
 	
 	for p in all(players)do
-		spr(p.s,p.x,p.y)
+		if not p.d then 
+			spr(p.s,p.x,p.y)
+		end
 	end
 	
 	for e in all(enemies)do
@@ -95,6 +98,16 @@ function player_update(p)
 	if(btn(⬅️))p.dx-=0.2
 	if(btn(➡️))p.dx+=0.2
 	
+	if p.x <-8 then
+		for a= p.i,3 do
+			player[a].d = true
+			alive -= 1
+		end
+		if alive <= 0 then
+			isgameover = true
+		end
+	end
+	
 	p.dx *= 0.9
 	p.dy += p.g
 	
@@ -115,10 +128,6 @@ function player_update(p)
 		{x=e.x+6, y=e.y+6})
 		
 		if(c) p.dx-=1
-	end
-	
-	if p.dx <0 then
-		isgameover = true
 	end
 end
 
