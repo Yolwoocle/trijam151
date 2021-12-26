@@ -20,7 +20,7 @@ function _init()
 			bw=6,
 			bh=6,
 			
-			g=0.2,
+			g=0.1,
 			
 			dx=0,
 			dy=0,
@@ -40,11 +40,11 @@ function _update60()
 	for i=1,3 do
 		spawntimer[i]-=1
 		if spawntimer[i]<0 then
-			spawntimer[i]=30+rnd(50)
+			spawntimer[i]=60+rnd(50)
 			
 			add(enemies,{
 				x=128,
-				y=i*40-20,
+				y=i*40-8,
 				s=5,
 			})
 		end
@@ -52,7 +52,7 @@ function _update60()
 	end
 	
 	for e in all(enemies)do
-		e.x-=1
+		e.x-=0.7
 	end
 end
 
@@ -62,6 +62,8 @@ function _draw()
 	
 	for p in all(players)do
 		spr(p.s,p.x,p.y)
+		
+		pset(p.x,p.y,14)
 	end
 	
 	for e in all(enemies)do
@@ -162,30 +164,33 @@ end
 --player
 
 function player_update(p)
-if btn(p.btn_,1) and p.colly then
-			p.dy = -3
-		end
+	if btn(⬆️) and p.colly then
+		p.dy = -3
+	end
+	if(btn(⬅️))p.dx-=0.2
+	if(btn(➡️))p.dx+=0.2
+	
+	p.dx *= 0.9
+	p.dy += p.g
+	
+	local x,y,xy=iscoll(p)
+	p.colly=y
+	
+	collide(p,x,y,xy)
+	
+	p.x += p.dx
+	p.y += p.dy
+	
+	for e in all(enemies)do
+		local c=rect_overlap(
+		p,
+		{x=p.x+p.bw+p.bw, 
+		y=p.y+p.by+p.bh},
+		{x=e.x+2, y=e.y+2},
+		{x=e.x+6, y=e.y+6})
 		
-		p.dx *= 0.9
-		p.dy += p.g
-		
-		local x,y,xy=iscoll(p)
-		p.colly=y
-		
-		collide(p,x,y,xy)
-		
-		p.x += p.dx
-		p.y += p.dy
-		
-		for e in all(enemies)do
-			local c=rect_overlap(
-			p,
-			{x=p.x+p.bx, y=p.y+p.by},
-			e,
-			{x=e.x+7, y=e.y+7})
-			
-			if(c) stop("oh non")
-		end
+		if(c) p.dx-=0.5
+	end
 end
 __gfx__
 000000000088888000aa0aa0005dd500dddddddd8888888800000000000000000000000000000000000000000000000000000000000000000000000000000000
