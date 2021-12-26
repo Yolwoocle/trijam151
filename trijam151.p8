@@ -17,7 +17,7 @@ function _init()
 			s=i,
 			d = false,
 			
-			x=128-i*20,
+			x=128-40,
 			y=i*40-20,
 			
 			bx=1,
@@ -41,7 +41,7 @@ end
 
 function _update60()
 	if not isgameover then
-		score += 0.1
+		score += 0.1 * alive
 		
 		for p in all(players)do
 			if not p.d then 
@@ -51,8 +51,8 @@ function _update60()
 		
 		for i=1,3 do
 			spawntimer[i]-=1
-			if spawntimer[i]<0 then
-				spawntimer[i]=60+rnd(50)
+			if spawntimer[i]<0 and not players[i].d then
+				spawntimer[i]=10*alive+rnd(10) + 20/(score/2)
 				
 				add(enemies,{
 					s=5,
@@ -119,7 +119,7 @@ function player_update(p)
 	if(btn(⬅️))p.dx-=0.2
 	if(btn(➡️))p.dx+=0.2
 	
-	if p.x <-8 or p.x >128 then
+	if p.x <-4 then
 		for a= p.n,3 do
 			if not players[a].d then 
 				players[a].d = true
@@ -168,7 +168,7 @@ end
 -->8
 --collision
 function is_solid(x,y)
-	if(y<0 or y>128)return true
+	if(x>125 or y<0 or y>128)return true
 	return check_flag(0,x,y)
 end
 
@@ -219,7 +219,7 @@ function iscoll(o,bounce1)
 end
 
 function collide(o,coll_x,coll_y,coll_xy)
-	bounce=0.1
+	bounce=0.05
 	if coll_x then
 		o.dx *= -bounce
 	end
