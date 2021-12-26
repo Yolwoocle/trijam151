@@ -5,6 +5,7 @@ function _init()
 	spd = .2
 	isgameover = false
 	score = 0
+	alive = 3
 	
 	players = {}
 	
@@ -64,6 +65,7 @@ end
 
 function _draw()
 	cls(12)
+	print(alive, 15, 15)
 	map()
 	
 	for p in all(players)do
@@ -92,9 +94,10 @@ function player_update(p)
 	if(btn(⬅️))p.dx-=0.2
 	if(btn(➡️))p.dx+=0.2
 	
-	if p.x <-8 then
-		for a= p.i,3 do
-			player[a].d = true
+	if p.x <-8 or p.x >128 and not p.d then
+		for a= p.n,3 do
+			players[a].d = true
+			players[a].x = 0
 			alive -= 1
 		end
 		if alive <= 0 then
@@ -128,7 +131,7 @@ end
 -->8
 --collision
 function is_solid(x,y)
-	if(x>128 or y<0 or y>128)return true
+	if(y<0 or y>128)return true
 	return check_flag(0,x,y)
 end
 
