@@ -61,13 +61,14 @@ function _update60()
 	
 	for e in all(enemies)do
 		e.x+=e.dx
+		if(e.x<-8)del(enemies,e)
 	end
 	
-	shk *= 0.9
+	shk =max(0, shk-0.5)
 end
 
 function _draw()
-	camera(rnd(shk)-shk,rnd(shk)-shk)
+	camera(rnd(shk)-shk,0)--rnd(shk)-shk)
 	
 	cls(12)
 	print(alive, 15, 15)
@@ -103,6 +104,7 @@ function player_update(p)
 	if p.x <-8 or p.x >128 and not p.d then
 		for a= p.n,3 do
 			players[a].d = true
+			shk = 8
 			players[a].x = 0
 			alive -= 1
 		end
