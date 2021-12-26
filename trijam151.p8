@@ -3,7 +3,9 @@ version 34
 __lua__
 function _init()
 	spd = .3
-	
+	isGameOver = false
+	score = 0
+
 	players = {}
 	for i=1,3 do
 		add(players,{
@@ -25,12 +27,18 @@ function _init()
 end
 
 function _update60()
+	score += 0.1
+
 	for p in all(players)do
 		if(btn(⬅️))p.dx -= spd
 		if(btn(➡️))p.dx += spd
 		if(btn(⬆️))p.dy -= spd
 		if(btn(⬇️))p.dy += spd
 		
+		if p.dx <0 then
+			isGameOver = true
+		end
+
 		p.dx *= 0.95
 		p.dy *= 0.95
 		
