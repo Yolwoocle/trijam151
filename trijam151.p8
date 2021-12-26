@@ -38,56 +38,65 @@ function _init()
 end
 
 function _update60()
-	score += 0.1
-	
-	for p in all(players)do
-		player_update(p)
-	end
-	
-	for i=1,3 do
-		spawntimer[i]-=1
-		if spawntimer[i]<0 then
-			spawntimer[i]=60+rnd(50)
-			
-			add(enemies,{
-				s=5,
-				
-				x=128,
-				y=i*40-8-rnd(3*8),
-				dx=-0.5-rnd(0.3),
-			})
+	if not isgameover then
+		score += 0.1
+		
+		for p in all(players)do
+			if not p.d then 
+				player_update(p)
+			end
 		end
+		
+		for i=1,3 do
+			spawntimer[i]-=1
+			if spawntimer[i]<0 then
+				spawntimer[i]=60+rnd(50)
+				
+				add(enemies,{
+					s=5,
+					
+					x=128,
+					y=i*40-8-rnd(3*8),
+					dx=-0.5-rnd(0.3),
+				})
+			end
+		end
+		
+		for e in all(enemies)do
+			e.x+=e.dx
+		end
+		
+		shk *= 0.9
 	end
-	
-	for e in all(enemies)do
-		e.x+=e.dx
-	end
-	
-	shk *= 0.9
 end
 
 function _draw()
 	camera(rnd(shk)-shk,rnd(shk)-shk)
 	
 	cls(12)
-	print(alive, 15, 15)
-	map()
-	
-	for p in all(players)do
-		if not p.d then 
-			spr(p.s,p.x,p.y)
+	if not isgameover then
+		print(flr(score), 15, 15)
+		map()
+		for p in all(players)do
+			if not p.d then 
+				spr(p.s,p.x,p.y)
+			end
+		end
+		
+		for e in all(enemies)do
+			spr(e.s,e.x,e.y)
+		end
+		
+		for i=0,128,8do
+			local y = sin(t()+i/16)*0.9
+			spr(16,y,i)
+			spr(17,121-y,i)
 		end
 	end
-	
-	for e in all(enemies)do
-		spr(e.s,e.x,e.y)
+	if isgameover then
+		print("you ded",50,64)
+		print('yOUR SCORE WAS '.. tostr(flr(score))..'\n you noob',40,80 )
 	end
-	
-	for i=0,128,8do
-		local y = sin(t()+i/16)*0.9
-		spr(16,y,i)
-		spr(17,121-y,i)
-	end 
 end
 
 -->8
@@ -100,11 +109,13 @@ function player_update(p)
 	if(btn(⬅️))p.dx-=0.2
 	if(btn(➡️))p.dx+=0.2
 	
-	if p.x <-8 or p.x >128 and not p.d then
+	if p.x <-8 or p.x >128 then
 		for a= p.n,3 do
-			players[a].d = true
-			players[a].x = 0
-			alive -= 1
+			if not players[a].d then 
+				players[a].d = true
+				players[a].x = 0
+				alive -= 1
+			end
 		end
 		if alive <= 0 then
 			isgameover = true
