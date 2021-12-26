@@ -3,7 +3,7 @@ version 34
 __lua__
 function _init()
 	spd = .2
-	isGameOver = false
+	isgameover = false
 	score = 0
 	
 	players = {}
@@ -36,7 +36,7 @@ end
 
 function _update60()
 	score += 0.1
-
+	
 	for p in all(players)do
 		player_update(p)
 	end
